@@ -33,3 +33,23 @@ dollar, euro, rub, tenge, todaydata = course()
 #         print("\n",course())
 
 # -------------------------------------------------------------------------------------
+
+# -------Ставим ЛАЙК---------------------------
+
+class Like(APIView):
+    """Ставим лайк"""
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        pk = request.data.get("pk")
+        post = Post.objects.get(id=pk)
+        if request.user in post.user_like.all():
+            post.user_like.remove(User.objects.get(id=request.user.id))
+            post.like -= 1
+        else:
+            post.user_like.add(User.objects.get(id=request.user.id))
+            post.like += 1
+        post.save()
+        return Response(status=201)
+
+# -------------------------------------------------------------------------------------
