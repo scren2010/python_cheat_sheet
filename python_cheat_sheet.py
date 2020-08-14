@@ -53,3 +53,18 @@ class Like(APIView):
         return Response(status=201)
 
 # -------------------------------------------------------------------------------------
+
+# -------Работаем с типом модели группируем в сериалайзер---------------------------
+
+    full_order = list(order) + list(content)
+    results = list()
+       for entry in full_order:
+           item_type = entry.__class__.__name__.lower()
+           if isinstance(entry, Order):
+               serializer = OrderSerializer(entry)
+           if isinstance(entry, Content):
+               serializer = ContentSerializer(entry)
+           results.append({'item_type': item_type, 'data': serializer.data})
+         return Response(results)
+
+# -------------------------------------------------------------------------------------
